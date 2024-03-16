@@ -3,12 +3,12 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
-import { StatusRecordController } from './controllers/status-record.controller';
+import { StatusController } from './controllers/status.controller';
 import { StatusRecord, StatusRecordSchema } from './entities/status-record.entity';
-import { StatusRecordService } from './entity-services/status-record.service';
 import { CustomLogger } from './helpers/logger';
 import { RequestLoggingMiddleware } from './middlewares/request-logging.middleware';
 import { CheckScheduler } from './schedulers/check.scheduler';
+import { StatusService } from './services/status.service';
 
 export const moduleDefinition = {
 	imports: [
@@ -20,8 +20,8 @@ export const moduleDefinition = {
 		}),
 		ScheduleModule.forRoot(),
 	],
-	controllers: [StatusRecordController],
-	providers: [StatusRecordService, CustomLogger, CheckScheduler],
+	controllers: [StatusController],
+	providers: [StatusService, CustomLogger, CheckScheduler],
 };
 
 @Module(moduleDefinition)

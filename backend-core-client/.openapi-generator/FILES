@@ -1,9 +1,12 @@
 .gitignore
+.openapi-generator-ignore
 README.md
-apis/StatusRecordApi.ts
+apis/StatusApi.ts
 apis/index.ts
 index.ts
-models/StatusRecord.ts
+models/Check.ts
+models/Group.ts
+models/Project.ts
 models/index.ts
 package.json
 runtime.ts

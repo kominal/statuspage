@@ -1,1 +1,1 @@
-export * from './StatusRecordApi';
+export * from './StatusApi';

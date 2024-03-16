@@ -1,4 +1,4 @@
-export class Check {
+export class ConfigCheck {
 	public slug: string;
 	public name: string;
 	public description?: string;
@@ -7,22 +7,22 @@ export class Check {
 	public public: boolean;
 }
 
-export class Project {
+export class ConfigProject {
 	public slug: string;
 	public name: string;
 	public description?: string;
 	public public: boolean;
-	public checks: Check[];
+	public checks: ConfigCheck[];
 }
 
-export class Group {
+export class ConfigGroup {
 	public slug: string;
 	public name: string;
 	public description?: string;
 	public public: boolean;
-	public projects: Project[];
+	public projects: ConfigProject[];
 }
 
 export class Config {
-	groups: Group[];
+	groups: ConfigGroup[];
 }

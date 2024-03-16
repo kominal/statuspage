@@ -1,21 +1,46 @@
 {
 	"openapi": "3.0.0",
 	"paths": {
-		"/groups/{groupSlug}/projects/{projectSlug}/checks/{checkSlug}": {
+		"/status/groups": {
 			"get": {
-				"operationId": "StatusRecordController_readHistory",
+				"operationId": "StatusController_readGroups",
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": "",
+						"content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Group" } } } }
+					}
+				},
+				"tags": ["status"]
+			}
+		},
+		"/status/groups/{groupSlug}/projects": {
+			"get": {
+				"operationId": "StatusController_readProjects",
+				"parameters": [{ "name": "groupSlug", "required": true, "in": "path", "schema": { "type": "string" } }],
+				"responses": {
+					"200": {
+						"description": "",
+						"content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Project" } } } }
+					}
+				},
+				"tags": ["status"]
+			}
+		},
+		"/status/groups/{groupSlug}/projects/{projectSlug}/checks": {
+			"get": {
+				"operationId": "StatusController_readChecks",
 				"parameters": [
 					{ "name": "groupSlug", "required": true, "in": "path", "schema": { "type": "string" } },
-					{ "name": "projectSlug", "required": true, "in": "path", "schema": { "type": "string" } },
-					{ "name": "checkSlug", "required": true, "in": "path", "schema": { "type": "string" } }
+					{ "name": "projectSlug", "required": true, "in": "path", "schema": { "type": "string" } }
 				],
 				"responses": {
 					"200": {
 						"description": "",
-						"content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/StatusRecord" } } } }
+						"content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Check" } } } }
 					}
 				},
-				"tags": ["status-record"]
+				"tags": ["status"]
 			}
 		}
 	},
@@ -25,38 +50,36 @@
 	"components": {
 		"securitySchemes": { "bearer": { "scheme": "bearer", "bearerFormat": "JWT", "type": "http" } },
 		"schemas": {
-			"StatusRecord": {
+			"Group": {
 				"type": "object",
 				"properties": {
-					"groupSlug": { "type": "string" },
-					"projectSlug": { "type": "string" },
-					"checkSlug": { "type": "string" },
-					"time": { "format": "date-time", "type": "string" },
-					"statusCode": { "type": "number" },
-					"latency": { "type": "number" },
-					"data": { "type": "object" },
-					"_id": { "type": "string" },
-					"uuid": { "type": "string" },
-					"createdAt": { "format": "date-time", "type": "string" },
-					"createdBy": { "type": "string" },
-					"changedAt": { "format": "date-time", "type": "string" },
-					"changedBy": { "type": "string" }
+					"slug": { "type": "string" },
+					"name": { "type": "string" },
+					"description": { "type": "string" },
+					"status": { "type": "string", "enum": ["ONLINE", "DEGRADED", "OFFLINE"] }
 				},
-				"required": [
-					"groupSlug",
-					"projectSlug",
-					"checkSlug",
-					"time",
-					"statusCode",
-					"latency",
-					"data",
-					"_id",
-					"uuid",
-					"createdAt",
-					"createdBy",
-					"changedAt",
-					"changedBy"
-				]
+				"required": ["slug", "name", "status"]
+			},
+			"Project": {
+				"type": "object",
+				"properties": {
+					"slug": { "type": "string" },
+					"name": { "type": "string" },
+					"description": { "type": "string" },
+					"status": { "type": "string", "enum": ["ONLINE", "DEGRADED", "OFFLINE"] }
+				},
+				"required": ["slug", "name", "status"]
+			},
+			"Check": {
+				"type": "object",
+				"properties": {
+					"slug": { "type": "string" },
+					"name": { "type": "string" },
+					"description": { "type": "string" },
+					"status": { "type": "string", "enum": ["ONLINE", "DEGRADED", "OFFLINE"] },
+					"latencies": { "type": "array", "items": { "type": "number" } }
+				},
+				"required": ["slug", "name", "status", "latencies"]
 			}
 		}
 	}
