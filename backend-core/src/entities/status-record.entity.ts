@@ -28,4 +28,9 @@ export class StatusRecord extends BaseEntity {
 
 export type StatusRecordModel = Model<StatusRecord>;
 
-export const StatusRecordSchema = SchemaFactory.createForClass(StatusRecord);
+export const StatusRecordSchema = SchemaFactory.createForClass(StatusRecord).index({
+	groupSlug: 1,
+	projectSlug: 1,
+	checkSlug: 1,
+	time: -1,
+});

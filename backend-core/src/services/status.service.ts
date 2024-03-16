@@ -55,20 +55,27 @@ export class StatusService {
 			return [];
 		}
 
-		return project.checks
-			.filter((check) => check.public)
-			.map((check) => {
-				return {
-					name: check.name,
-					slug: check.slug,
-					description: check.description,
-					status: Status.OFFLINE,
-					latencies: [0, 0, 0],
-				};
-			});
-	}
+		const checks = project.checks.filter((check) => check.public);
 
-	public async readHistory(groupSlug: string, projectSlug: string, checkSlug: string): Promise<StatusRecord[]> {
-		return this.statusRecordModel.find({ groupSlug, projectSlug, checkSlug, time: { $gte: new Date(Date.now() - 1000 * 60 * 60 * 24) } });
+		const resultingChecks: Check[] = [];
+
+		for (const check of checks) {
+			const statusRecords = await this.statusRecordModel.find({
+				groupSlug: group.slug,
+				projectSlug: project.slug,
+				checkSlug: check.slug,
+				time: { $gte: new Date(Date.now() - 1000 * 60 * 60 * 24) },
+			});
+
+			resultingChecks.push({
+				name: check.name,
+				slug: check.slug,
+				description: check.description,
+				status: statusRecords[statusRecords.length - 1].statusCode === 200 ? Status.ONLINE : Status.DEGRADED,
+				latencies: statusRecords.map((statusRecord) => statusRecord.latency),
+			});
+		}
+
+		return resultingChecks;
 	}
 }
