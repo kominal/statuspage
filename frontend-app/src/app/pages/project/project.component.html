@@ -1,7 +1,7 @@
 @if(checks$ | async; as checks) {
 <!---->
 @for (check of checks; track $index) {
-<div class="h-8rem bg-white overflow-hidden border-round flex cursor-pointer flex-shrink-0">
+<div class="h-8rem bg-white overflow-hidden border-round flex flex-shrink-0">
 	<status-status-icon [status]="check.status"></status-status-icon>
 	<div class="flex flex-column gap-2 p-2 flex-grow-1">
 		<h3 class="m-0">{{ check.name }}</h3>
@@ -9,6 +9,9 @@
 		<span>{{ check.description }}</span>
 		}
 	</div>
+</div>
+<div class="bg-white overflow-hidden border-round flex flex-shrink-0">
+	<status-latency-history class="w-full" [latencies]="check.latencies"></status-latency-history>
 </div>
 }
 <!---->

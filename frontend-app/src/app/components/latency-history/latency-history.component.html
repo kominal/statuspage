@@ -1,4 +1,4 @@
-<div class="bg-white flex align-items-end p-2" style="height: 100px; gap: 1px">
+<div class="bg-white flex align-items-end p-2" style="gap: 1px">
 	@for (latency of normalizedLatencies; track $index) {
 	<div class="bg-green-600 w-full" [style.height]="latency.percentage + 'px'" [pTooltip]="latency.latency + 'ms'"></div>
 	}
