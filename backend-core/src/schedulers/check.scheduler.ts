@@ -4,6 +4,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import axios from 'axios';
 import { v4 } from 'uuid';
 import { StatusRecord, StatusRecordModel, StatusType } from '../entities/status-record.entity';
+import { Check, Config, Group, Project } from '../models/config.model';
 
 @Injectable()
 export class CheckScheduler {
@@ -11,15 +12,18 @@ export class CheckScheduler {
 
 	public constructor(@InjectModel(StatusRecord.name) public statusRecordModel: StatusRecordModel) {}
 
-	@Cron(CronExpression.EVERY_MINUTE)
-	public async run(): Promise<void> {
+	private async check(group: Group, project: Project, check: Check): Promise<void> {
 		const startTime = new Date().getTime();
-		const r = await axios.get('https://www.google.com');
+		const r = await axios.get(check.url);
 		const latency = new Date().getTime() - startTime;
 
+		this.logger.log(`Check ${group.slug}/${project.slug}/${check.slug} returned status code ${r.status} in ${latency}ms.`);
+
 		await this.statusRecordModel.create({
+			groupSlug: group.slug,
+			projectSlug: project.slug,
+			checkSlug: check.slug,
 			time: new Date(),
-			url: 'https://www.google.com',
 			statusCode: r.status,
 			latency,
 			createdAt: new Date(),
@@ -29,5 +33,18 @@ export class CheckScheduler {
 			type: StatusType.LATENCY,
 			uuid: v4(),
 		});
+	}
+
+	@Cron(CronExpression.EVERY_MINUTE)
+	public async run(): Promise<void> {
+		const config: Config = JSON.parse(process.env.CONFIG || '{}') as Config;
+
+		for (const group of config.groups) {
+			for (const project of group.projects) {
+				for (const check of project.checks) {
+					await this.check(group, project, check);
+				}
+			}
+		}
 	}
 }
