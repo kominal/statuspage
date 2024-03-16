@@ -10,6 +10,7 @@ export class Check {
 	public description?: string;
 	public status: Status;
 	public latencies: number[];
+	public data: any;
 }
 
 export class Project {

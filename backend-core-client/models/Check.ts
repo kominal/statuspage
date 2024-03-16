@@ -41,6 +41,11 @@ export interface Check {
      * @memberof Check
      */
     latencies: Array<number>;
+    /**
+     * @type {object}
+     * @memberof Check
+     */
+    data: object;
 }
 
 /**

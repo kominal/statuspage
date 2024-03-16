@@ -67,12 +67,15 @@ export class StatusService {
 				time: { $gte: new Date(Date.now() - 1000 * 60 * 60 * 24) },
 			});
 
+			const latestStatusRecord = statusRecords[statusRecords.length - 1];
+
 			resultingChecks.push({
 				name: check.name,
 				slug: check.slug,
 				description: check.description,
-				status: statusRecords[statusRecords.length - 1].statusCode === 200 ? Status.ONLINE : Status.DEGRADED,
+				status: latestStatusRecord && latestStatusRecord.statusCode === 200 ? Status.ONLINE : Status.DEGRADED,
 				latencies: statusRecords.map((statusRecord) => statusRecord.latency),
+				data: latestStatusRecord?.data,
 			});
 		}
 

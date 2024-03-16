@@ -77,9 +77,10 @@
 					"name": { "type": "string" },
 					"description": { "type": "string" },
 					"status": { "type": "string", "enum": ["ONLINE", "DEGRADED", "OFFLINE"] },
-					"latencies": { "type": "array", "items": { "type": "number" } }
+					"latencies": { "type": "array", "items": { "type": "number" } },
+					"data": { "type": "object" }
 				},
-				"required": ["slug", "name", "status", "latencies"]
+				"required": ["slug", "name", "status", "latencies", "data"]
 			}
 		}
 	}
