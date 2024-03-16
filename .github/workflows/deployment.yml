@@ -20,8 +20,8 @@ jobs:
           ref: production
       - name: Define variables
         run: |
-          echo "MONGODB_CONNECTION_STRING=${{ vars.MONGODB_CONNECTION_STRING }}" >> $GITHUB_ENV
-          echo "MAIL_CONNECTION_STRING=${{ vars.MAIL_CONNECTION_STRING }}" >> $GITHUB_ENV
+          echo "MONGODB_CONNECTION_STRING=${{ secrets.MONGODB_CONNECTION_STRING }}" >> $GITHUB_ENV
+          echo "MAIL_CONNECTION_STRING=${{ secrets.MAIL_CONNECTION_STRING }}" >> $GITHUB_ENV
           echo "CONFIG=${{ vars.CONFIG }}" >> $GITHUB_ENV
       - name: Define base url
         run: echo "BASE_URL=status.kominal.cloud" >> $GITHUB_ENV
