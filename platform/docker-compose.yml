@@ -15,7 +15,7 @@ services:
         - 'traefik.http.routers.${STACK_NAME}_frontend-app.entrypoints=https'
         - 'traefik.http.routers.${STACK_NAME}_frontend-app.tls=true'
         - 'traefik.http.routers.${STACK_NAME}_frontend-app.tls.certresolver=https'
-        - 'traefik.http.routers.${STACK_NAME}_frontend-app.rule=Host(`app.${BASE_URL}`) && !PathPrefix(`/api`)'
+        - 'traefik.http.routers.${STACK_NAME}_frontend-app.rule=Host(`${BASE_URL}`) && !PathPrefix(`/api`)'
         - 'traefik.http.services.${STACK_NAME}_frontend-app.loadbalancer.server.port=8080'
     networks:
       - global
@@ -28,7 +28,7 @@ services:
         - 'traefik.http.middlewares.${STACK_NAME}_backend-core.stripprefix.prefixes=/api/core'
         - 'traefik.http.routers.${STACK_NAME}_backend-core.entrypoints=https'
         - 'traefik.http.routers.${STACK_NAME}_backend-core.tls=true'
-        - 'traefik.http.routers.${STACK_NAME}_backend-core.rule=(Host(`${BASE_URL}`) || Host(`app.${BASE_URL}`)) && PathPrefix(`/api/core`)'
+        - 'traefik.http.routers.${STACK_NAME}_backend-core.rule=(Host(`${BASE_URL}`) || Host(`${BASE_URL}`)) && PathPrefix(`/api/core`)'
         - 'traefik.http.routers.${STACK_NAME}_backend-core.middlewares=${STACK_NAME}_backend-core'
         - 'traefik.http.services.${STACK_NAME}_backend-core.loadbalancer.server.port=3000'
     networks:
