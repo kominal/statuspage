@@ -1,21 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostBinding } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { StatusApi } from 'backend-core-client';
 import { StatusIconComponent } from '../../components/status-icon/status-icon.component';
 
 @Component({
-	selector: 'status-projects',
+	selector: 'status-groups',
 	standalone: true,
 	imports: [CommonModule, StatusIconComponent, RouterModule],
-	templateUrl: './projects.component.html',
-	styleUrl: './projects.component.scss',
+	templateUrl: './groups.component.html',
+	styleUrl: './groups.component.scss',
 })
-export class ProjectsComponent {
+export class GroupsComponent {
 	@HostBinding('class')
 	public classes = 'surface-ground h-full flex flex-column gap-3 overflow-auto p-4';
 
-	public projects$ = this.statusApi.statusControllerReadProjects({ groupSlug: this.activatedRoute.snapshot.params['groupSlug'] });
+	public groups$ = this.statusApi.statusControllerReadGroups();
 
-	public constructor(private statusApi: StatusApi, private activatedRoute: ActivatedRoute) {}
+	public constructor(private statusApi: StatusApi) {}
 }

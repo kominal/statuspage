@@ -1,1 +1,15 @@
-<p>projects works!</p>
+@if(projects$ | async; as projects) {
+<!---->
+@for (project of projects; track $index) {
+<div class="h-8rem bg-white overflow-hidden border-round flex cursor-pointer flex-shrink-0" [routerLink]="project.slug">
+	<status-status-icon [status]="project.status"></status-status-icon>
+	<div class="flex flex-column gap-2 p-2 flex-grow-1">
+		<h3 class="m-0">{{ project.name }}</h3>
+		@if(project.description) {
+		<span>{{ project.description }}</span>
+		}
+	</div>
+</div>
+}
+<!---->
+}

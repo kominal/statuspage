@@ -1,0 +1,15 @@
+@if(groups$ | async; as groups) {
+<!---->
+@for (group of groups; track $index) {
+<div class="h-8rem bg-white overflow-hidden border-round flex cursor-pointer flex-shrink-0" [routerLink]="group.slug">
+	<status-status-icon [status]="group.status"></status-status-icon>
+	<div class="flex flex-column gap-2 p-2 flex-grow-1">
+		<h3 class="m-0">{{ group.name }}</h3>
+		@if(group.description) {
+		<span>{{ group.description }}</span>
+		}
+	</div>
+</div>
+}
+<!---->
+}

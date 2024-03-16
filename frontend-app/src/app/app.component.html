@@ -1,1 +1,8 @@
+<status-header></status-header>
 <router-outlet></router-outlet>
+
+@if (loadingService.isLoading$ | async) {
+<div class="progress-spinner flex h-full align-items-center justify-content-center">
+	<p-progressSpinner></p-progressSpinner>
+</div>
+}
