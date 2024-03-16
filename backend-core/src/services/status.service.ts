@@ -37,7 +37,7 @@ export class StatusService {
 					name: project.name,
 					slug: project.slug,
 					description: project.description,
-					status: Status.ONLINE,
+					status: Status.DEGRADED,
 				};
 			});
 	}
@@ -55,14 +55,14 @@ export class StatusService {
 			return [];
 		}
 
-		return this.CONFIG.groups
-			.filter((group) => group.public)
-			.map((group) => {
+		return project.checks
+			.filter((check) => check.public)
+			.map((check) => {
 				return {
-					name: group.name,
-					slug: group.slug,
-					description: group.description,
-					status: Status.ONLINE,
+					name: check.name,
+					slug: check.slug,
+					description: check.description,
+					status: Status.OFFLINE,
 					latencies: [0, 0, 0],
 				};
 			});
