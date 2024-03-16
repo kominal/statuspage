@@ -10,13 +10,13 @@ export enum StatusType {
 @Schema()
 export class StatusRecord extends BaseEntity {
 	@Prop()
-	public groupSlug: Date;
+	public groupSlug: string;
 
 	@Prop()
-	public projectSlug: Date;
+	public projectSlug: string;
 
 	@Prop()
-	public checkSlug: Date;
+	public checkSlug: string;
 
 	@Prop()
 	public time: Date;
