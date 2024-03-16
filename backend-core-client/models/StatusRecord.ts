@@ -20,12 +20,22 @@ export interface StatusRecord {
      * @type {string}
      * @memberof StatusRecord
      */
-    time: string;
+    groupSlug: string;
     /**
      * @type {string}
      * @memberof StatusRecord
      */
-    url: string;
+    projectSlug: string;
+    /**
+     * @type {string}
+     * @memberof StatusRecord
+     */
+    checkSlug: string;
+    /**
+     * @type {string}
+     * @memberof StatusRecord
+     */
+    time: string;
     /**
      * @type {number}
      * @memberof StatusRecord
@@ -36,11 +46,6 @@ export interface StatusRecord {
      * @memberof StatusRecord
      */
     latency: number;
-    /**
-     * @type {string}
-     * @memberof StatusRecord
-     */
-    type: StatusRecordTypeEnum;
     /**
      * @type {object}
      * @memberof StatusRecord
@@ -77,13 +82,3 @@ export interface StatusRecord {
      */
     changedBy: string;
 }
-
-/**
- * @export
- * @enum {string}
- */
-export enum StatusRecordTypeEnum {
-    Latency = 'LATENCY',
-    Health = 'HEALTH'
-}
-

@@ -4,12 +4,16 @@ import { StatusRecord } from '../entities/status-record.entity';
 import { StatusRecordService } from '../entity-services/status-record.service';
 
 @ApiTags('status-record')
-@Controller('projects/:projectId/status/:statusId')
+@Controller('groups/:groupSlug/projects/:projectSlug/checks/:checkSlug')
 export class StatusRecordController {
 	public constructor(private statusRecordService: StatusRecordService) {}
 
 	@Get()
-	public readHistory(@Param('projectId') projectId: string, @Param('statusId') statusId: string): Promise<StatusRecord[]> {
-		return this.statusRecordService.readHistory(projectId, statusId);
+	public readHistory(
+		@Param('groupSlug') groupSlug: string,
+		@Param('projectSlug') projectSlug: string,
+		@Param('checkSlug') checkSlug: string
+	): Promise<StatusRecord[]> {
+		return this.statusRecordService.readHistory(groupSlug, projectSlug, checkSlug);
 	}
 }

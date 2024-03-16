@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import axios from 'axios';
 import { v4 } from 'uuid';
-import { StatusRecord, StatusRecordModel, StatusType } from '../entities/status-record.entity';
+import { StatusRecord, StatusRecordModel } from '../entities/status-record.entity';
 import { Check, Config, Group, Project } from '../models/config.model';
 
 @Injectable()
@@ -14,24 +14,24 @@ export class CheckScheduler {
 
 	private async check(group: Group, project: Project, check: Check): Promise<void> {
 		const startTime = new Date().getTime();
-		const r = await axios.get(check.url);
+		const response = await axios.get(check.url);
 		const latency = new Date().getTime() - startTime;
 
-		this.logger.log(`Check ${group.slug}/${project.slug}/${check.slug} returned status code ${r.status} in ${latency}ms.`);
+		this.logger.log(`Check ${group.slug}/${project.slug}/${check.slug} returned status code ${response.status} in ${latency}ms.`);
 
 		await this.statusRecordModel.create({
 			groupSlug: group.slug,
 			projectSlug: project.slug,
 			checkSlug: check.slug,
 			time: new Date(),
-			statusCode: r.status,
+			statusCode: response.status,
 			latency,
 			createdAt: new Date(),
 			createdBy: 'System',
 			changedAt: new Date(),
 			changedBy: 'System',
-			type: StatusType.LATENCY,
 			uuid: v4(),
+			data: check.type === 'HEALTH' ? response.data : undefined,
 		});
 	}
 

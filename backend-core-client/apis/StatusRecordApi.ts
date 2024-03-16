@@ -20,8 +20,9 @@ import type {
 } from '../models';
 
 export interface StatusRecordControllerReadHistoryRequest {
-    projectId: string;
-    statusId: string;
+    groupSlug: string;
+    projectSlug: string;
+    checkSlug: string;
 }
 
 /**
@@ -31,14 +32,15 @@ export class StatusRecordApi extends BaseAPI {
 
     /**
      */
-    statusRecordControllerReadHistory({ projectId, statusId }: StatusRecordControllerReadHistoryRequest): Observable<Array<StatusRecord>>
-    statusRecordControllerReadHistory({ projectId, statusId }: StatusRecordControllerReadHistoryRequest, opts?: OperationOpts): Observable<AjaxResponse<Array<StatusRecord>>>
-    statusRecordControllerReadHistory({ projectId, statusId }: StatusRecordControllerReadHistoryRequest, opts?: OperationOpts): Observable<Array<StatusRecord> | AjaxResponse<Array<StatusRecord>>> {
-        throwIfNullOrUndefined(projectId, 'projectId', 'statusRecordControllerReadHistory');
-        throwIfNullOrUndefined(statusId, 'statusId', 'statusRecordControllerReadHistory');
+    statusRecordControllerReadHistory({ groupSlug, projectSlug, checkSlug }: StatusRecordControllerReadHistoryRequest): Observable<Array<StatusRecord>>
+    statusRecordControllerReadHistory({ groupSlug, projectSlug, checkSlug }: StatusRecordControllerReadHistoryRequest, opts?: OperationOpts): Observable<AjaxResponse<Array<StatusRecord>>>
+    statusRecordControllerReadHistory({ groupSlug, projectSlug, checkSlug }: StatusRecordControllerReadHistoryRequest, opts?: OperationOpts): Observable<Array<StatusRecord> | AjaxResponse<Array<StatusRecord>>> {
+        throwIfNullOrUndefined(groupSlug, 'groupSlug', 'statusRecordControllerReadHistory');
+        throwIfNullOrUndefined(projectSlug, 'projectSlug', 'statusRecordControllerReadHistory');
+        throwIfNullOrUndefined(checkSlug, 'checkSlug', 'statusRecordControllerReadHistory');
 
         return this.request<Array<StatusRecord>>({
-            url: '/projects/{projectId}/status/{statusId}'.replace('{projectId}', encodeURI(projectId)).replace('{statusId}', encodeURI(statusId)),
+            url: '/groups/{groupSlug}/projects/{projectSlug}/checks/{checkSlug}'.replace('{groupSlug}', encodeURI(groupSlug)).replace('{projectSlug}', encodeURI(projectSlug)).replace('{checkSlug}', encodeURI(checkSlug)),
             method: 'GET',
         }, opts?.responseOpts);
     };

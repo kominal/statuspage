@@ -2,11 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Model, SchemaTypes } from 'mongoose';
 import { BaseEntity } from '../models/entity.model';
 
-export enum StatusType {
-	LATENCY = 'LATENCY',
-	HEALTH = 'HEALTH',
-}
-
 @Schema()
 export class StatusRecord extends BaseEntity {
 	@Prop()
@@ -26,9 +21,6 @@ export class StatusRecord extends BaseEntity {
 
 	@Prop()
 	public latency: number;
-
-	@Prop()
-	public type: StatusType;
 
 	@Prop({ type: SchemaTypes.Mixed })
 	public data: any;

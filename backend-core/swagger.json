@@ -1,12 +1,13 @@
 {
 	"openapi": "3.0.0",
 	"paths": {
-		"/projects/{projectId}/status/{statusId}": {
+		"/groups/{groupSlug}/projects/{projectSlug}/checks/{checkSlug}": {
 			"get": {
 				"operationId": "StatusRecordController_readHistory",
 				"parameters": [
-					{ "name": "projectId", "required": true, "in": "path", "schema": { "type": "string" } },
-					{ "name": "statusId", "required": true, "in": "path", "schema": { "type": "string" } }
+					{ "name": "groupSlug", "required": true, "in": "path", "schema": { "type": "string" } },
+					{ "name": "projectSlug", "required": true, "in": "path", "schema": { "type": "string" } },
+					{ "name": "checkSlug", "required": true, "in": "path", "schema": { "type": "string" } }
 				],
 				"responses": {
 					"200": {
@@ -27,11 +28,12 @@
 			"StatusRecord": {
 				"type": "object",
 				"properties": {
+					"groupSlug": { "type": "string" },
+					"projectSlug": { "type": "string" },
+					"checkSlug": { "type": "string" },
 					"time": { "format": "date-time", "type": "string" },
-					"url": { "type": "string" },
 					"statusCode": { "type": "number" },
 					"latency": { "type": "number" },
-					"type": { "type": "string", "enum": ["LATENCY", "HEALTH"] },
 					"data": { "type": "object" },
 					"_id": { "type": "string" },
 					"uuid": { "type": "string" },
@@ -41,11 +43,12 @@
 					"changedBy": { "type": "string" }
 				},
 				"required": [
+					"groupSlug",
+					"projectSlug",
+					"checkSlug",
 					"time",
-					"url",
 					"statusCode",
 					"latency",
-					"type",
 					"data",
 					"_id",
 					"uuid",
