@@ -1,0 +1,7 @@
+export enum ErrorType {
+	NOT_FOUND = 'NOT_FOUND',
+	IN_USE = 'IN_USE',
+	GENERIC = 'GENERIC',
+	SLUG_INVALID = 'SLUG_INVALID',
+	SLUG_IN_USE = 'SLUG_IN_USE',
+}

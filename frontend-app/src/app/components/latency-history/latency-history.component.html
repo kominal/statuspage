@@ -1,0 +1,5 @@
+<div class="bg-white flex align-items-end p-2 overflow-y-scroll" style="height: 100px; gap: 1px">
+	@for (value of values; track $index) {
+	<div class="flex-shrink-0 bg-green-600" style="width: 4px" [style.height]="value + 'px'"></div>
+	}
+</div>

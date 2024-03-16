@@ -1,0 +1,60 @@
+{
+	"openapi": "3.0.0",
+	"paths": {
+		"/projects/{projectId}/status/{statusId}": {
+			"get": {
+				"operationId": "StatusRecordController_readHistory",
+				"parameters": [
+					{ "name": "projectId", "required": true, "in": "path", "schema": { "type": "string" } },
+					{ "name": "statusId", "required": true, "in": "path", "schema": { "type": "string" } }
+				],
+				"responses": {
+					"200": {
+						"description": "",
+						"content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/StatusRecord" } } } }
+					}
+				},
+				"tags": ["status-record"]
+			}
+		}
+	},
+	"info": { "title": "Core", "description": "", "version": "1.0.0", "contact": {} },
+	"tags": [],
+	"servers": [{ "url": "/api/core", "description": "Current installation" }],
+	"components": {
+		"securitySchemes": { "bearer": { "scheme": "bearer", "bearerFormat": "JWT", "type": "http" } },
+		"schemas": {
+			"StatusRecord": {
+				"type": "object",
+				"properties": {
+					"time": { "format": "date-time", "type": "string" },
+					"url": { "type": "string" },
+					"statusCode": { "type": "number" },
+					"latency": { "type": "number" },
+					"type": { "type": "string", "enum": ["LATENCY", "HEALTH"] },
+					"data": { "type": "object" },
+					"_id": { "type": "string" },
+					"uuid": { "type": "string" },
+					"createdAt": { "format": "date-time", "type": "string" },
+					"createdBy": { "type": "string" },
+					"changedAt": { "format": "date-time", "type": "string" },
+					"changedBy": { "type": "string" }
+				},
+				"required": [
+					"time",
+					"url",
+					"statusCode",
+					"latency",
+					"type",
+					"data",
+					"_id",
+					"uuid",
+					"createdAt",
+					"createdBy",
+					"changedAt",
+					"changedBy"
+				]
+			}
+		}
+	}
+}

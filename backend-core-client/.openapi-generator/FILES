@@ -1,0 +1,11 @@
+.gitignore
+README.md
+apis/StatusRecordApi.ts
+apis/index.ts
+index.ts
+models/StatusRecord.ts
+models/index.ts
+package.json
+runtime.ts
+servers.ts
+tsconfig.json
