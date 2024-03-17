@@ -64,7 +64,7 @@ export class StatusService {
 				groupSlug: group.slug,
 				projectSlug: project.slug,
 				checkSlug: check.slug,
-				time: { $gte: new Date(Date.now() - 1000 * 60 * 60 * 24) },
+				time: { $gte: new Date(Date.now() - 1000 * 60 * 60 * 12) },
 			});
 
 			const latestStatusRecord = statusRecords[statusRecords.length - 1];
