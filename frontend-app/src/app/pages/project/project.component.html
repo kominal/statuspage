@@ -13,6 +13,20 @@
 <div class="bg-white overflow-hidden border-round flex flex-shrink-0">
 	<status-latency-history class="w-full" [latencies]="check.latencies"></status-latency-history>
 </div>
+@if(check.data) {
+<!---->
+@for (service of $any(check.data).services; track $index) {
+<div class="h-8rem bg-white overflow-hidden border-round flex flex-shrink-0">
+	<status-status-icon [status]="service.status"></status-status-icon>
+	<div class="flex flex-column gap-2 p-2 flex-grow-1">
+		<h3 class="m-0">{{ service.name }}</h3>
+	</div>
+</div>
+<!---->
+}
+<!---->
+}
+<!---->
 }
 <!---->
 }

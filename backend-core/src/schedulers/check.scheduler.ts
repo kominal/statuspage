@@ -15,25 +15,35 @@ export class CheckScheduler {
 	public constructor(@InjectModel(StatusRecord.name) public statusRecordModel: StatusRecordModel) {}
 
 	private async check(group: ConfigGroup, project: ConfigProject, check: ConfigCheck): Promise<void> {
-		const startTime = new Date().getTime();
-		const response = await axios.get(check.url);
-		const latency = new Date().getTime() - startTime;
+		let statusCode = 0;
+		let latency = 0;
+		let data = undefined;
 
-		this.logger.log(`Check ${group.slug}/${project.slug}/${check.slug} returned status code ${response.status} in ${latency}ms.`);
+		try {
+			const startTime = new Date().getTime();
+			const response = await axios.get(check.url);
+			latency = new Date().getTime() - startTime;
+			statusCode = response.status;
+			data = response.data;
+
+			this.logger.log(`Check ${group.slug}/${project.slug}/${check.slug} returned status code ${response.status} in ${latency}ms.`);
+		} catch (e) {
+			this.logger.log(`Check ${group.slug}/${project.slug}/${check.slug} failed.`);
+		}
 
 		await this.statusRecordModel.create({
 			groupSlug: group.slug,
 			projectSlug: project.slug,
 			checkSlug: check.slug,
 			time: new Date(),
-			statusCode: response.status,
+			statusCode,
 			latency,
 			createdAt: new Date(),
 			createdBy: 'System',
 			changedAt: new Date(),
 			changedBy: 'System',
 			uuid: v4(),
-			data: check.type === 'HEALTH' ? response.data : undefined,
+			data: check.type === 'HEALTH' ? data : undefined,
 		});
 	}
 
