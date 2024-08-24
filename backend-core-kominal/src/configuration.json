@@ -1,0 +1,110 @@
+{
+	"groups": [
+		{
+			"slug": "kominal",
+			"name": "Kominal",
+			"public": true,
+			"projects": [
+				{
+					"slug": "homepage",
+					"name": "Homepage",
+					"public": true,
+					"checks": [{ "slug": "http", "name": "HTTP", "type": "HTTP", "url": "https://www.kominal.com", "public": true }]
+				},
+				{
+					"slug": "branding",
+					"name": "Branding",
+					"public": true,
+					"checks": [{ "slug": "http", "name": "HTTP", "type": "HTTP", "url": "https://branding.kominal.cloud", "public": true }]
+				},
+				{
+					"slug": "flow",
+					"name": "Flow",
+					"public": true,
+					"checks": [
+						{ "slug": "homepage", "name": "Homepage", "type": "HTTP", "url": "https://flow.kominal.cloud", "public": true },
+						{ "slug": "application", "name": "Application", "type": "HTTP", "url": "https://app.flow.kominal.cloud", "public": true },
+						{
+							"slug": "backend-core",
+							"name": "Backend Core",
+							"type": "HEALTH",
+							"url": "https://flow.kominal.cloud/api/core/health",
+							"public": true
+						}
+					]
+				},
+				{
+					"slug": "moins-cher",
+					"name": "Moins Cher",
+					"public": true,
+					"checks": [
+						{ "slug": "application", "name": "Application", "type": "HTTP", "url": "https://moins-cher.mu", "public": true },
+						{
+							"slug": "backend-core",
+							"name": "Backend Core",
+							"type": "HEALTH",
+							"url": "https://moins-cher.mu/api/core/health",
+							"public": true
+						}
+					]
+				}
+			]
+		},
+		{
+			"slug": "maygreen",
+			"name": "Maygreen",
+			"public": true,
+			"projects": [
+				{
+					"slug": "homepage",
+					"name": "Homepage",
+					"public": true,
+					"checks": [{ "slug": "http", "name": "HTTP", "type": "HTTP", "url": "https://www.maygreen.com", "public": true }]
+				},
+				{
+					"slug": "cbam-facilitator",
+					"name": "CBAM Facilitator",
+					"public": true,
+					"checks": [
+						{ "slug": "application", "name": "Application", "type": "HTTP", "url": "https://app.cbamfacilitator.com", "public": true },
+						{
+							"slug": "backend-core",
+							"name": "Backend Core",
+							"type": "HEALTH",
+							"url": "https://app.cbamfacilitator.com/api/core/health",
+							"public": true
+						}
+					]
+				}
+			]
+		},
+		{
+			"slug": "sustainaccount",
+			"name": "Sustainaccount",
+			"public": true,
+			"projects": [
+				{
+					"slug": "homepage",
+					"name": "Homepage",
+					"public": true,
+					"checks": [{ "slug": "http", "name": "HTTP", "type": "HTTP", "url": "https://www.sustainaccount.com", "public": true }]
+				},
+				{
+					"slug": "esg-enterprise-suite",
+					"name": "ESG Enterprise Suite",
+					"public": true,
+					"checks": [
+						{ "slug": "application", "name": "Application", "type": "HTTP", "url": "https://esgenterprisesuite.com", "public": true },
+						{
+							"slug": "backend-core",
+							"name": "Backend Core",
+							"type": "HEALTH",
+							"url": "https://esgenterprisesuite.com/api/core/health",
+							"public": true
+						}
+					]
+				}
+			]
+		}
+	]
+}

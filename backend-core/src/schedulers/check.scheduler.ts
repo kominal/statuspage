@@ -3,13 +3,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import axios from 'axios';
 import { v4 } from 'uuid';
+import { CONFIG } from '../app.module';
 import { StatusRecord, StatusRecordModel } from '../entities/status-record.entity';
-import { Config, ConfigCheck, ConfigGroup, ConfigProject } from '../models/config.model';
+import { ConfigCheck, ConfigGroup, ConfigProject } from '../models/config.model';
 
 @Injectable()
 export class CheckScheduler {
-	public CONFIG = JSON.parse(process.env.CONFIG) as Config;
-
 	private readonly logger = new Logger(CheckScheduler.name);
 
 	public constructor(@InjectModel(StatusRecord.name) public statusRecordModel: StatusRecordModel) {}
@@ -49,7 +48,7 @@ export class CheckScheduler {
 
 	@Cron(CronExpression.EVERY_MINUTE)
 	public async run(): Promise<void> {
-		for (const group of this.CONFIG.groups) {
+		for (const group of CONFIG.groups) {
 			for (const project of group.projects) {
 				for (const check of project.checks) {
 					await this.check(group, project, check);

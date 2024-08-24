@@ -1,17 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { CONFIG } from '../app.module';
 import { StatusRecord, StatusRecordModel } from '../entities/status-record.entity';
-import { Config } from '../models/config.model';
 import { Check, Group, Project, Status } from '../models/result.model';
 
 @Injectable()
 export class StatusService {
-	public CONFIG = JSON.parse(process.env.CONFIG) as Config;
-
 	public constructor(@InjectModel(StatusRecord.name) public statusRecordModel: StatusRecordModel) {}
 
 	public async readGroups(): Promise<Group[]> {
-		return this.CONFIG.groups
+		return CONFIG.groups
 			.filter((group) => group.public)
 			.map((group) => {
 				return {
@@ -24,7 +22,7 @@ export class StatusService {
 	}
 
 	public async readProjects(groupSlug: string): Promise<Project[]> {
-		const group = this.CONFIG.groups.find((group) => group.slug === groupSlug);
+		const group = CONFIG.groups.find((group) => group.slug === groupSlug);
 
 		if (!group) {
 			return [];
@@ -43,7 +41,7 @@ export class StatusService {
 	}
 
 	public async readChecks(groupSlug: string, projectSlug: string): Promise<Check[]> {
-		const group = this.CONFIG.groups.find((group) => group.slug === groupSlug);
+		const group = CONFIG.groups.find((group) => group.slug === groupSlug);
 
 		if (!group) {
 			return [];

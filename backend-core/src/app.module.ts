@@ -3,12 +3,16 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
+import { readFileSync } from 'fs';
 import { StatusController } from './controllers/status.controller';
 import { StatusRecord, StatusRecordSchema } from './entities/status-record.entity';
 import { CustomLogger } from './helpers/logger';
 import { RequestLoggingMiddleware } from './middlewares/request-logging.middleware';
+import { Config } from './models/config.model';
 import { CheckScheduler } from './schedulers/check.scheduler';
 import { StatusService } from './services/status.service';
+
+export const CONFIG = JSON.parse(readFileSync('/data/configuration.json').toString('utf-8')) as Config;
 
 export const moduleDefinition = {
 	imports: [
