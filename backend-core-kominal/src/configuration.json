@@ -20,7 +20,7 @@
 					"checks": [{ "slug": "http", "name": "HTTP", "type": "HTTP", "url": "https://branding.kominal.cloud", "public": true }]
 				},
 				{
-					"slug": "flow",
+					"slug": "flow-production",
 					"name": "Flow (Production)",
 					"public": true,
 					"checks": [
@@ -31,6 +31,88 @@
 							"name": "Backend Core",
 							"type": "HEALTH",
 							"url": "https://flow.kominal.cloud/api/core/health",
+							"public": true
+						}
+					]
+				},
+				{
+					"slug": "softpoll-production",
+					"name": "SoftPoll (Production)",
+					"public": true,
+					"checks": [
+						{ "slug": "homepage", "name": "Homepage", "type": "HTTP", "url": "https://www.softpoll.de", "public": true },
+						{ "slug": "application", "name": "Application", "type": "HTTP", "url": "https://app.softpoll.de", "public": true },
+						{
+							"slug": "backend-core",
+							"name": "Backend Core",
+							"type": "HEALTH",
+							"url": "https://app.softpoll.de/api/core/health",
+							"public": true
+						}
+					]
+				},
+				{
+					"slug": "jsk-rechtsanwaelte-production",
+					"name": "jskrechtsanwaelte (Production)",
+					"public": true,
+					"checks": [{ "slug": "jsk-suite", "name": "jsk Suite", "type": "HTTP", "url": "https://jsk-suite.kominal.cloud", "public": true }]
+				},
+				{
+					"slug": "wissensfloater-production",
+					"name": "Wissensfloater (Production)",
+					"public": true,
+					"checks": [
+						{ "slug": "homepage", "name": "Homepage", "type": "HTTP", "url": "https://www.wissensfloater.com", "public": true },
+						{
+							"slug": "backend-core",
+							"name": "Backend Core",
+							"type": "HEALTH",
+							"url": "https://www.wissensfloater.com/api/core/health",
+							"public": true
+						}
+					]
+				},
+				{
+					"slug": "reitbuch-automation-production",
+					"name": "Reitbuch Automation (Production)",
+					"public": false,
+					"checks": [
+						{
+							"slug": "frontend-app",
+							"name": "Frontend App",
+							"type": "HTTP",
+							"url": "https://reitbuch-automation.kominal.cloud",
+							"public": true
+						},
+						{
+							"slug": "backend-core",
+							"name": "Backend Core",
+							"type": "HEALTH",
+							"url": "https://reitbuch-automation.kominal.cloud/api/core/health",
+							"public": true
+						}
+					]
+				}
+			]
+		},
+		{
+			"slug": "brainbowplus",
+			"name": "brainbowplus",
+			"public": true,
+			"recipients": ["marc.schroeder@kominal.com"],
+			"alertOn": ["FAILURE", "RECOVERY"],
+			"projects": [
+				{
+					"slug": "kompetenzcheck-production",
+					"name": "Kompetenzcheck (Production)",
+					"public": true,
+					"checks": [
+						{ "slug": "application", "name": "Application", "type": "HTTP", "url": "https://app.kompetenzcheck.eu", "public": true },
+						{
+							"slug": "backend-core",
+							"name": "Backend Core",
+							"type": "HEALTH",
+							"url": "https://app.kompetenzcheck.eu/api/core/health",
 							"public": true
 						}
 					]
@@ -51,7 +133,7 @@
 					"checks": [{ "slug": "http", "name": "HTTP", "type": "HTTP", "url": "https://www.maygreen.com", "public": true }]
 				},
 				{
-					"slug": "cbam-facilitator",
+					"slug": "cbam-facilitator-production",
 					"name": "CBAM Facilitator (Production)",
 					"public": true,
 					"checks": [
@@ -66,7 +148,7 @@
 					]
 				},
 				{
-					"slug": "cbam-facilitator",
+					"slug": "cbam-facilitator-pre-production",
 					"name": "CBAM Facilitator (Pre-Production)",
 					"public": true,
 					"checks": [
@@ -96,7 +178,7 @@
 					"checks": [{ "slug": "http", "name": "HTTP", "type": "HTTP", "url": "https://www.sustainaccount.com", "public": true }]
 				},
 				{
-					"slug": "esg-enterprise-suite",
+					"slug": "esg-enterprise-suite-production",
 					"name": "ESG Enterprise Suite (Production)",
 					"public": true,
 					"checks": [
@@ -111,7 +193,7 @@
 					]
 				},
 				{
-					"slug": "esg-enterprise-suite",
+					"slug": "esg-enterprise-suite-pre-production",
 					"name": "ESG Enterprise Suite (Pre-Production)",
 					"public": true,
 					"checks": [
