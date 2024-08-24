@@ -20,7 +20,7 @@ services:
     networks:
       - global
   backend-core:
-    image: ghcr.io/kominal/statuspage/backend-core:production
+    image: ghcr.io/kominal/statuspage/backend-core-kominal:production
     deploy:
       replicas: 1
       labels:
