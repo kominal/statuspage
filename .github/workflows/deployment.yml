@@ -8,7 +8,7 @@ on:
 
 jobs:
   Production:
-    runs-on: deployment
+    runs-on: backup02
     defaults:
       run:
         working-directory: platform
