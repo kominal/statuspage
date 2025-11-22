@@ -33,7 +33,7 @@ export class StatusService {
 				.filter((project) => project.public)
 				.map(async (project) => {
 					const hasDegradedCheck = project.checks.some(async (check) => {
-						if (!check.public) {
+						if (check.public) {
 							const latestStatusRecord = await this.statusRecordModel
 								.find({
 									groupSlug: group.slug,
@@ -44,6 +44,8 @@ export class StatusService {
 								.limit(1);
 							return latestStatusRecord.length === 0 || latestStatusRecord[0].statusCode !== 200;
 						}
+
+						return false;
 					});
 
 					return {
