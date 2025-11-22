@@ -14,7 +14,7 @@ export class StatusService {
 				.filter((group) => group.public)
 				.map(async (group) => {
 					const hasDegradedCheck = await Promise.all(
-						group.projects.map(async (project) =>
+						group.projects.flatMap((project) =>
 							project.checks
 								.filter((check) => check.public)
 								.flatMap(async (check) => {
