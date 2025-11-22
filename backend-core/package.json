@@ -7,8 +7,8 @@
 	"license": "UNLICENSED",
 	"scripts": {
 		"build": "nest build",
-		"start": "export DEV=true; nest start --watch",
-		"start-local": "export DEV=true; docker run --name mongodb --rm -p 27017:27017 mongo:latest > /dev/null & nest start --watch",
+		"start": "set DEV=true && nest start --watch",
+		"start-local": "set DEV=true; docker run --name mongodb --rm -p 27017:27017 mongo:latest > /dev/null & nest start --watch",
 		"init-swagger": "sudo npm install @openapitools/openapi-generator-cli -g && sudo openapi-generator-cli version-manager set latest",
 		"generate-swagger": "export GENERATE_SWAGGER=true && nest start && npx prettier swagger.json --write && openapi-generator-cli generate -i swagger.json -g typescript-rxjs -o ../backend-core-client --skip-validate-spec --additional-properties=npmName=backend-core-client,supportsES6=true,npmVersion=local && cd ../backend-core-client && sed -i 's!node_modules/.bin/tsc --outDir dist/!tsc!g' package.json && npx prettier package.json --write && npm install --ignore-scripts && npx tsc"
 	},
