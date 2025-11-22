@@ -32,14 +32,16 @@ export class StatusService {
 			group.projects
 				.filter((project) => project.public)
 				.map(async (project) => {
-					const hasDegradedCheck = project.checks
-						.filter((check) => check.public)
-						.some(async (check) => {
-							const latestStatusRecord = await this.statusRecordModel
-								.findOne({ groupSlug: group.slug, projectSlug: project.slug, checkSlug: check.slug })
-								.sort({ time: -1 });
-							return !latestStatusRecord || latestStatusRecord.statusCode !== 200;
-						});
+					const hasDegradedCheck = Promise.all(
+						project.checks
+							.filter((check) => check.public)
+							.map(async (check) => {
+								const latestStatusRecord = await this.statusRecordModel
+									.findOne({ groupSlug: group.slug, projectSlug: project.slug, checkSlug: check.slug })
+									.sort({ time: -1 });
+								return !latestStatusRecord || latestStatusRecord.statusCode !== 200;
+							})
+					).then((results) => results.some(Boolean));
 
 					return {
 						name: project.name,
