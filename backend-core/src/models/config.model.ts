@@ -21,6 +21,8 @@ export class ConfigGroup {
 	public description?: string;
 	public public: boolean;
 	public projects: ConfigProject[];
+	public recipients?: string[];
+	public alertOn: string[];
 }
 
 export class Config {

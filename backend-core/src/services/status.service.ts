@@ -35,14 +35,9 @@ export class StatusService {
 					const hasDegradedCheck = project.checks.some(async (check) => {
 						if (check.public) {
 							const latestStatusRecord = await this.statusRecordModel
-								.find({
-									groupSlug: group.slug,
-									projectSlug: project.slug,
-									checkSlug: check.slug,
-								})
-								.sort({ time: -1 })
-								.limit(1);
-							return latestStatusRecord.length === 0 || latestStatusRecord[0].statusCode !== 200;
+								.findOne({ groupSlug: group.slug, projectSlug: project.slug, checkSlug: check.slug })
+								.sort({ time: -1 });
+							return !!latestStatusRecord && latestStatusRecord.statusCode !== 200;
 						}
 
 						return false;

@@ -5,15 +5,20 @@ import axios from 'axios';
 import { v4 } from 'uuid';
 import { CONFIG } from '../app.module';
 import { StatusRecord, StatusRecordModel } from '../entities/status-record.entity';
+import { Change } from '../models/change.model';
 import { ConfigCheck, ConfigGroup, ConfigProject } from '../models/config.model';
+import { MailService } from '../services/mail.service';
 
 @Injectable()
 export class CheckScheduler {
 	private readonly logger = new Logger(CheckScheduler.name);
 
-	public constructor(@InjectModel(StatusRecord.name) public statusRecordModel: StatusRecordModel) {}
+	public constructor(
+		@InjectModel(StatusRecord.name) private statusRecordModel: StatusRecordModel,
+		private mailService: MailService
+	) {}
 
-	private async check(group: ConfigGroup, project: ConfigProject, check: ConfigCheck): Promise<void> {
+	private async check(group: ConfigGroup, project: ConfigProject, check: ConfigCheck): Promise<Change | undefined> {
 		let statusCode = 0;
 		let latency = 0;
 		let data = undefined;
@@ -30,7 +35,11 @@ export class CheckScheduler {
 			this.logger.log(`Check ${group.slug}/${project.slug}/${check.slug} failed.`);
 		}
 
-		await this.statusRecordModel.create({
+		const latestStatusRecord = await this.statusRecordModel
+			.findOne({ groupSlug: group.slug, projectSlug: project.slug, checkSlug: check.slug })
+			.sort({ time: -1 });
+
+		const statusRecord: Omit<StatusRecord, '_id'> = {
 			groupSlug: group.slug,
 			projectSlug: project.slug,
 			checkSlug: check.slug,
@@ -43,17 +52,34 @@ export class CheckScheduler {
 			changedBy: 'System',
 			uuid: v4(),
 			data: check.type === 'HEALTH' ? data : undefined,
-		});
+		};
+
+		await this.statusRecordModel.create(statusRecord);
+
+		if (latestStatusRecord && latestStatusRecord.statusCode !== statusCode) {
+			this.logger.log(
+				`Status change detected for ${group.slug}/${project.slug}/${check.slug}: ${latestStatusRecord.statusCode} -> ${statusCode}`
+			);
+
+			return { group, project, check, previous: latestStatusRecord, current: statusRecord };
+		}
+
+		return undefined;
 	}
 
 	@Cron(CronExpression.EVERY_MINUTE)
 	public async run(): Promise<void> {
+		const changes: Change[] = [];
 		for (const group of CONFIG.groups) {
 			for (const project of group.projects) {
 				for (const check of project.checks) {
 					await this.check(group, project, check);
 				}
 			}
+		}
+
+		if (changes.length > 0) {
+			await this.mailService.sendStatusChangeMail(changes[0].group.recipients || [], changes);
 		}
 	}
 }

@@ -11,6 +11,7 @@ import { CustomLogger } from './helpers/logger';
 import { RequestLoggingMiddleware } from './middlewares/request-logging.middleware';
 import { Config } from './models/config.model';
 import { CheckScheduler } from './schedulers/check.scheduler';
+import { MailService } from './services/mail.service';
 import { StatusService } from './services/status.service';
 
 export const CONFIG = JSON.parse(env.CONFIGURATION || readFileSync('/data/configuration.json').toString('utf-8')) as Config;
@@ -26,7 +27,7 @@ export const moduleDefinition = {
 		ScheduleModule.forRoot(),
 	],
 	controllers: [StatusController],
-	providers: [StatusService, CustomLogger, CheckScheduler],
+	providers: [StatusService, MailService, CustomLogger, CheckScheduler],
 };
 
 @Module(moduleDefinition)
