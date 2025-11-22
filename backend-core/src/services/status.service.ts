@@ -12,11 +12,24 @@ export class StatusService {
 		return CONFIG.groups
 			.filter((group) => group.public)
 			.map((group) => {
+				const hasDegradedCheck = Promise.all(
+					group.projects.map(async (project) =>
+						project.checks
+							.filter((check) => check.public)
+							.flatMap(async (check) => {
+								const latestStatusRecord = await this.statusRecordModel
+									.findOne({ groupSlug: group.slug, projectSlug: project.slug, checkSlug: check.slug })
+									.sort({ time: -1 });
+								return !latestStatusRecord || latestStatusRecord.statusCode !== 200;
+							})
+					)
+				).then((results) => results.some(Boolean));
+
 				return {
 					name: group.name,
 					slug: group.slug,
 					description: group.description,
-					status: Status.ONLINE,
+					status: hasDegradedCheck ? Status.DEGRADED : Status.ONLINE,
 				};
 			});
 	}
