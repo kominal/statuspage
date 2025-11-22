@@ -73,7 +73,10 @@ export class CheckScheduler {
 		for (const group of CONFIG.groups) {
 			for (const project of group.projects) {
 				for (const check of project.checks) {
-					await this.check(group, project, check);
+					const change = await this.check(group, project, check);
+					if (change) {
+						changes.push(change);
+					}
 				}
 			}
 		}
