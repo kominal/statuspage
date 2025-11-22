@@ -9,29 +9,31 @@ export class StatusService {
 	public constructor(@InjectModel(StatusRecord.name) public statusRecordModel: StatusRecordModel) {}
 
 	public async readGroups(): Promise<Group[]> {
-		return CONFIG.groups
-			.filter((group) => group.public)
-			.map((group) => {
-				const hasDegradedCheck = Promise.all(
-					group.projects.map(async (project) =>
-						project.checks
-							.filter((check) => check.public)
-							.flatMap(async (check) => {
-								const latestStatusRecord = await this.statusRecordModel
-									.findOne({ groupSlug: group.slug, projectSlug: project.slug, checkSlug: check.slug })
-									.sort({ time: -1 });
-								return !latestStatusRecord || latestStatusRecord.statusCode !== 200;
-							})
-					)
-				).then((results) => results.some(Boolean));
+		return Promise.all(
+			CONFIG.groups
+				.filter((group) => group.public)
+				.map(async (group) => {
+					const hasDegradedCheck = await Promise.all(
+						group.projects.map(async (project) =>
+							project.checks
+								.filter((check) => check.public)
+								.flatMap(async (check) => {
+									const latestStatusRecord = await this.statusRecordModel
+										.findOne({ groupSlug: group.slug, projectSlug: project.slug, checkSlug: check.slug })
+										.sort({ time: -1 });
+									return !latestStatusRecord || latestStatusRecord.statusCode !== 200;
+								})
+						)
+					).then((results) => results.some(Boolean));
 
-				return {
-					name: group.name,
-					slug: group.slug,
-					description: group.description,
-					status: hasDegradedCheck ? Status.DEGRADED : Status.ONLINE,
-				};
-			});
+					return {
+						name: group.name,
+						slug: group.slug,
+						description: group.description,
+						status: hasDegradedCheck ? Status.DEGRADED : Status.ONLINE,
+					};
+				})
+		);
 	}
 
 	public async readProjects(groupSlug: string): Promise<Project[]> {
@@ -45,7 +47,7 @@ export class StatusService {
 			group.projects
 				.filter((project) => project.public)
 				.map(async (project) => {
-					const hasDegradedCheck = Promise.all(
+					const hasDegradedCheck = await Promise.all(
 						project.checks
 							.filter((check) => check.public)
 							.map(async (check) => {
