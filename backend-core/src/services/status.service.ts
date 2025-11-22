@@ -86,12 +86,14 @@ export class StatusService {
 		const resultingChecks: Check[] = [];
 
 		for (const check of checks) {
-			const statusRecords = await this.statusRecordModel.find({
-				groupSlug: group.slug,
-				projectSlug: project.slug,
-				checkSlug: check.slug,
-				time: { $gte: new Date(Date.now() - 1000 * 60 * 60 * 3) },
-			});
+			const statusRecords = await this.statusRecordModel
+				.find({
+					groupSlug: group.slug,
+					projectSlug: project.slug,
+					checkSlug: check.slug,
+					time: { $gte: new Date(Date.now() - 1000 * 60 * 60 * 3) },
+				})
+				.sort({ time: 1 });
 
 			const latestStatusRecord = statusRecords[statusRecords.length - 1];
 
