@@ -28,16 +28,32 @@ export class StatusService {
 			return [];
 		}
 
-		return group.projects
-			.filter((project) => project.public)
-			.map((project) => {
-				return {
-					name: project.name,
-					slug: project.slug,
-					description: project.description,
-					status: Status.DEGRADED,
-				};
-			});
+		return Promise.all(
+			group.projects
+				.filter((project) => project.public)
+				.map(async (project) => {
+					const hasDegradedCheck = project.checks.some(async (check) => {
+						if (!check.public) {
+							const latestStatusRecord = await this.statusRecordModel
+								.find({
+									groupSlug: group.slug,
+									projectSlug: project.slug,
+									checkSlug: check.slug,
+								})
+								.sort({ time: -1 })
+								.limit(1);
+							return latestStatusRecord.length === 0 || latestStatusRecord[0].statusCode !== 200;
+						}
+					});
+
+					return {
+						name: project.name,
+						slug: project.slug,
+						description: project.description,
+						status: hasDegradedCheck ? Status.DEGRADED : Status.ONLINE,
+					};
+				})
+		);
 	}
 
 	public async readChecks(groupSlug: string, projectSlug: string): Promise<Check[]> {
