@@ -22,7 +22,7 @@ export class ConfigGroup {
 	public public: boolean;
 	public projects: ConfigProject[];
 	public recipients?: string[];
-	public alertOn: string[];
+	public alertOn?: string[];
 }
 
 export class Config {
