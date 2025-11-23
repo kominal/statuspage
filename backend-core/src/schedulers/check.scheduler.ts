@@ -82,7 +82,19 @@ export class CheckScheduler {
 		}
 
 		if (changes.length > 0) {
-			await this.mailService.sendStatusChangeMail(changes[0].group.recipients || [], changes);
+			const changesByRecipient: Record<string, Change[]> = {};
+			for (const change of changes) {
+				for (const recipient of change.group.recipients || []) {
+					if (!changesByRecipient[recipient]) {
+						changesByRecipient[recipient] = [];
+					}
+					changesByRecipient[recipient].push(change);
+				}
+			}
+
+			for (const recipient of Object.keys(changesByRecipient)) {
+				await this.mailService.sendStatusChangeMail(recipient, changesByRecipient[recipient]);
+			}
 		}
 	}
 }

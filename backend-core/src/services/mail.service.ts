@@ -22,7 +22,18 @@ export class MailService {
 
 	public constructor(private mailerService: MailerService) {}
 
-	public async sendStatusChangeMail(recipients: string[], changes: Change[]): Promise<void> {
+	private toIcon(status: 'ERROR' | 'WARNING' | 'SUCCESS'): string {
+		switch (status) {
+			case 'SUCCESS':
+				return 'cid:success.png';
+			case 'WARNING':
+				return 'cid:warning.png';
+			case 'ERROR':
+				return 'cid:error.png';
+		}
+	}
+
+	public async sendStatusChangeMail(recipient: string, changes: Change[]): Promise<void> {
 		this.logger.log('Running mail service...');
 
 		const { MAIL_CONNECTION_STRING, MAIL_SENDER } = process.env;
@@ -32,36 +43,27 @@ export class MailService {
 			return;
 		}
 
-		const rows: string[] = [];
-
-		let hasError = false;
-		let hasWarning = false;
-		let hasSucess = false;
+		const results: { group: string; project: string; check: string; status: 'ERROR' | 'WARNING' | 'SUCCESS' }[] = [];
 
 		for (const { group, project, check, current } of changes) {
-			let icon = 'error.png';
-
-			if (current.statusCode === 200) {
-				icon = 'success.png';
-			}
-
-			if (icon === 'error.png') {
-				hasError = true;
-			} else if (icon === 'warning.png') {
-				hasWarning = true;
-			} else {
-				hasSucess = true;
-			}
-
-			rows.push(`
-          <tr style="border-bottom:1px solid #e9e9e9;">
-            <td style="padding: 5px 15px 5px 0;">${group.name}</td>
-            <td style="padding: 5px 15px 5px 0;">${project.name}</td>
-            <td style="padding: 5px 15px 5px 0;">${check.name}</td>
-            <td style="padding: 5px 15px 5px 0;"><img width="24px" src="cid:${icon}"></img></td>
-          </tr>
-            `);
+			results.push({
+				group: group.name,
+				project: project.name,
+				check: check.name,
+				status: current.statusCode === 200 ? 'SUCCESS' : 'ERROR',
+			});
 		}
+
+		const rows = results.map(
+			(result) => `
+          <tr style="border-bottom:1px solid #e9e9e9;">
+            <td style="padding: 5px 15px 5px 0;">${result.group}</td>
+            <td style="padding: 5px 15px 5px 0;">${result.project}</td>
+            <td style="padding: 5px 15px 5px 0;">${result.check}</td>
+            <td style="padding: 5px 15px 5px 0;"><img width="24px" src="${this.toIcon(result.status)}"></img></td>
+          </tr>
+            `
+		);
 
 		const template = `<mjml>
   <mj-body width="1000px">
@@ -86,22 +88,21 @@ export class MailService {
 
 		const attachments: ISendMailOptions['attachments'] = [];
 
-		if (hasSucess) {
+		if (results.some((r) => r.status === 'SUCCESS')) {
 			attachments.push({ filename: 'success.png', path: SUCCESS, cid: 'success.png', contentDisposition: 'inline' });
 		}
-		if (hasWarning) {
+		if (results.some((r) => r.status === 'WARNING')) {
 			attachments.push({ filename: 'warning.png', path: WARNING, cid: 'warning.png', contentDisposition: 'inline' });
 		}
-		if (hasError) {
+		if (results.some((r) => r.status === 'ERROR')) {
 			attachments.push({ filename: 'error.png', path: ERROR, cid: 'error.png', contentDisposition: 'inline' });
 		}
 
 		let icon = '✅';
-		if (hasWarning) {
-			icon = '⚠️';
-		}
-		if (hasError) {
+		if (results.some((r) => r.status === 'ERROR')) {
 			icon = '❌';
+		} else if (results.some((r) => r.status === 'WARNING')) {
+			icon = '⚠️';
 		}
 
 		const name = process.env.NAME;
@@ -109,7 +110,7 @@ export class MailService {
 
 		try {
 			await this.mailerService.sendMail({
-				to: recipients,
+				to: recipient,
 				from: `"Statuspage" <${MAIL_SENDER}>`,
 				subject: `${icon} ${prefix}| Statuspage Report`,
 				html: mjml2html(template).html,
