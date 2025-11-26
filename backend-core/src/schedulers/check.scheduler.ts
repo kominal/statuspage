@@ -35,9 +35,10 @@ export class CheckScheduler {
 			this.logger.log(`Check ${group.slug}/${project.slug}/${check.slug} failed.`);
 		}
 
-		const latestStatusRecord = await this.statusRecordModel
-			.findOne({ groupSlug: group.slug, projectSlug: project.slug, checkSlug: check.slug })
-			.sort({ time: -1 });
+		const latestStatusRecords = await this.statusRecordModel
+			.find({ groupSlug: group.slug, projectSlug: project.slug, checkSlug: check.slug })
+			.sort({ time: -1 })
+			.limit(3);
 
 		const statusRecord: Omit<StatusRecord, '_id'> = {
 			groupSlug: group.slug,
@@ -56,12 +57,12 @@ export class CheckScheduler {
 
 		await this.statusRecordModel.create(statusRecord);
 
-		if (latestStatusRecord && latestStatusRecord.statusCode !== statusCode) {
-			this.logger.log(
-				`Status change detected for ${group.slug}/${project.slug}/${check.slug}: ${latestStatusRecord.statusCode} -> ${statusCode}`
-			);
-
-			return { group, project, check, previous: latestStatusRecord, current: statusRecord };
+		if (latestStatusRecords.length >= 4) {
+			const [latest, ...remaining] = latestStatusRecords;
+			if (latest.statusCode !== statusCode && remaining.every((record) => record.statusCode === statusCode)) {
+				this.logger.log(`Status change detected for ${group.slug}/${project.slug}/${check.slug}: ${latest.statusCode} -> ${statusCode}`);
+				return { group, project, check, previous: latest, current: statusRecord };
+			}
 		}
 
 		return undefined;
