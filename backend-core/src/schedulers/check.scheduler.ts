@@ -38,7 +38,8 @@ export class CheckScheduler {
 		const latestStatusRecords = await this.statusRecordModel
 			.find({ groupSlug: group.slug, projectSlug: project.slug, checkSlug: check.slug })
 			.sort({ time: -1 })
-			.limit(3);
+			.limit(3)
+			.lean();
 
 		const statusRecord: Omit<StatusRecord, '_id'> = {
 			groupSlug: group.slug,
@@ -56,9 +57,6 @@ export class CheckScheduler {
 		};
 
 		await this.statusRecordModel.create(statusRecord);
-
-		console.log('Latest Status Records:', latestStatusRecords);
-		console.log('Current Status Code:', statusCode);
 
 		if (latestStatusRecords.length >= 3) {
 			const [latest, ...remaining] = latestStatusRecords;
