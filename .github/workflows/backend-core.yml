@@ -44,7 +44,3 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-  Deployment:
-    needs: build
-    uses: ./.github/workflows/deployment.yml
-    secrets: inherit
