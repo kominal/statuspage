@@ -57,6 +57,9 @@ export class CheckScheduler {
 
 		await this.statusRecordModel.create(statusRecord);
 
+		console.log('Latest Status Records:', latestStatusRecords);
+		console.log('Current Status Code:', statusCode);
+
 		if (latestStatusRecords.length >= 3) {
 			const [latest, ...remaining] = latestStatusRecords;
 			if (latest.statusCode !== statusCode && remaining.every((record) => record.statusCode === statusCode)) {
