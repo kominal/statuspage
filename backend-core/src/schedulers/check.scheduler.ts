@@ -60,6 +60,11 @@ export class CheckScheduler {
 
 		if (latestStatusRecords.length >= 3) {
 			const [latest, ...remaining] = latestStatusRecords;
+			console.log(
+				latest.statusCode,
+				statusCode,
+				remaining.map((r) => r.statusCode)
+			);
 			if (latest.statusCode !== statusCode && remaining.every((record) => record.statusCode === statusCode)) {
 				this.logger.log(`Status change detected for ${group.slug}/${project.slug}/${check.slug}: ${latest.statusCode} -> ${statusCode}`);
 				return { group, project, check, previous: latest, current: statusRecord };
