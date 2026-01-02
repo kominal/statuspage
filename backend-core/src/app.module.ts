@@ -6,6 +6,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { readFileSync } from 'fs';
 import { env } from 'process';
 import { StatusController } from './controllers/status.controller';
+import { CheckState, CheckStateSchema } from './entities/check-state.entity';
 import { StatusRecord, StatusRecordSchema } from './entities/status-record.entity';
 import { CustomLogger } from './helpers/logger';
 import { RequestLoggingMiddleware } from './middlewares/request-logging.middleware';
@@ -20,7 +21,10 @@ export const moduleDefinition = {
 	imports: [
 		ConfigModule.forRoot(),
 		MongooseModule.forRoot(process.env.MONGODB_CONNECTION_STRING || 'mongodb://127.0.0.1/local'),
-		MongooseModule.forFeature([{ name: StatusRecord.name, schema: StatusRecordSchema }]),
+		MongooseModule.forFeature([
+			{ name: StatusRecord.name, schema: StatusRecordSchema },
+			{ name: CheckState.name, schema: CheckStateSchema },
+		]),
 		MailerModule.forRoot({
 			transport: process.env.MAIL_CONNECTION_STRING || 'smtps://user@example.com:topsecret@smtp.example.com',
 		}),

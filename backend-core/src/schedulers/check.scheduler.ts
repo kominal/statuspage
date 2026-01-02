@@ -4,6 +4,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import axios from 'axios';
 import { v4 } from 'uuid';
 import { CONFIG } from '../app.module';
+import { CheckState, CheckStateModel } from '../entities/check-state.entity';
 import { StatusRecord, StatusRecordModel } from '../entities/status-record.entity';
 import { Change } from '../models/change.model';
 import { ConfigCheck, ConfigGroup, ConfigProject } from '../models/config.model';
@@ -15,6 +16,7 @@ export class CheckScheduler {
 
 	public constructor(
 		@InjectModel(StatusRecord.name) private statusRecordModel: StatusRecordModel,
+		@InjectModel(CheckState.name) private checkStateModel: CheckStateModel,
 		private mailService: MailService
 	) {}
 
@@ -59,10 +61,28 @@ export class CheckScheduler {
 		await this.statusRecordModel.create(statusRecord);
 
 		if (latestStatusRecords.length >= 3) {
-			const [latest, ...remaining] = latestStatusRecords.reverse();
-			if (latest.statusCode !== statusCode && remaining.every((record) => record.statusCode === statusCode)) {
-				this.logger.log(`Status change detected for ${group.slug}/${project.slug}/${check.slug}: ${latest.statusCode} -> ${statusCode}`);
-				return { group, project, check, previous: latest, current: statusRecord };
+			const latestCheckState = await this.checkStateModel.findOne({
+				groupSlug: group.slug,
+				projectSlug: project.slug,
+				checkSlug: check.slug,
+			});
+
+			const latestStatusCode = latestCheckState ? latestCheckState.statusCode : 0;
+
+			if (latestStatusCode !== statusCode && latestStatusRecords.every((record) => record.statusCode === statusCode)) {
+				await this.checkStateModel.updateOne(
+					{ groupSlug: group.slug, projectSlug: project.slug, checkSlug: check.slug },
+					{
+						statusCode,
+						changedAt: new Date(),
+						changedBy: 'System',
+						$setOnInsert: { createdAt: new Date(), createdBy: 'System', uuid: v4() },
+					},
+					{ upsert: true }
+				);
+
+				this.logger.log(`Status change detected for ${group.slug}/${project.slug}/${check.slug}: ${latestStatusCode} -> ${statusCode}`);
+				return { group, project, check, current: statusRecord };
 			}
 		}
 

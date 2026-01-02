@@ -5,6 +5,5 @@ export interface Change {
 	group: ConfigGroup;
 	project: ConfigProject;
 	check: ConfigCheck;
-	previous: StatusRecord;
 	current: Omit<StatusRecord, '_id'>;
 }
